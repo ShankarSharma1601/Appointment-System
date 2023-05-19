@@ -9,7 +9,7 @@ const registerController = async (req, res) => {
 
     if (existingUser) {
       return res.status(200).send({
-        message: `User Already Exist`,
+        message: "User Already Exist",
         success: false,
       });
     }
@@ -68,7 +68,7 @@ const loginController = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send({
-      success: false,
+      // success: false,
       message: `Error in Login Controller ${error.message}`,
     });
   }
@@ -76,7 +76,8 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
   try {
-    const user = await userModel.findOne({ _id: req.body.userId });
+    const user = await userModel.findById({ _id: req.body.userId });
+    user.password = undefined;
     if (!user) {
       return res.status(200).send({
         message: `user not found`,
@@ -84,11 +85,8 @@ const authController = async (req, res) => {
       });
     } else {
       res.status(200).send({
-        success: false,
-        data: {
-          name: user.name,
-          email: user.email,
-        },
+        success: true,
+        data: user,
       });
     }
   } catch (error) {
