@@ -1,11 +1,44 @@
 import React from "react";
 import Layout from "./../components/Layout";
 import { Col, Form, Input, Row, TimePicker, message } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import axios from "axios";
 
 const ApplyDoctor = () => {
+  const { user } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   // handle form
-  const handleFinish = (values) => {
+  const handleFinish = async (values) => {
     console.log(values);
+    try {
+      dispatch(showLoading());
+      const res = await axios.post(
+        "/api/v1/user/apply-doctor",
+        { ...values, userId: user._id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      dispatch(hideLoading());
+
+      if (res.data.success) {
+        message.success(res.data.success);
+        navigate("/");
+      } else {
+        message.error(res.data.success);
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error);
+      message.error("Something Went Wrong");
+    }
   };
   return (
     <Layout>

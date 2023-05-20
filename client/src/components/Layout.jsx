@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/LayoutStyles.css";
-import { message } from "antd";
+import { message, Badge, Avatar } from "antd";
 import { adminMenu, userMenu } from "../Data/data";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -48,7 +48,10 @@ const Layout = ({ children }) => {
           <div className="content">
             <div className="header">
               <div className="header-content">
-                <i className="fa-solid fa-bell"></i>
+                <Badge count={user && user.notification.length}>
+                  {/* <Avatar shape='square' size='large' /> */}
+                  <i className="fa-solid fa-bell"></i>
+                </Badge>
                 <Link to="/profile">{user?.name}</Link>
               </div>
             </div>
