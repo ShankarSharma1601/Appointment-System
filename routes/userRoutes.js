@@ -4,6 +4,7 @@ const {
   registerController,
   authController,
   applyDoctorController,
+  getAllNotificationController,
 } = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -22,5 +23,12 @@ router.post("/getUserData", authMiddleware, authController);
 
 // APPLY DOCTOR || POST
 router.post("/apply-doctor", authMiddleware, applyDoctorController);
+
+// Notification - Doctor || POST
+router.post(
+  "/get-all-notification",
+  authMiddleware,
+  getAllNotificationController
+);
 
 module.exports = router;
