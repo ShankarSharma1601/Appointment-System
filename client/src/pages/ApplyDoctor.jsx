@@ -29,10 +29,10 @@ const ApplyDoctor = () => {
       dispatch(hideLoading());
 
       if (res.data.success) {
-        message.success(res.data.success);
+        message.success(res.data.message);
         navigate("/");
       } else {
-        message.error(res.data.success);
+        message.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -126,12 +126,12 @@ const ApplyDoctor = () => {
           </Col>
           <Col xs={24} md={24} lg={8}>
             <Form.Item
-              label="Fees Per Cunsaltation"
-              name="feesPerCunsaltation"
+              label="Fees Per Cunsultation"
+              name="feesPerCunsultation"
               required
               rules={[{ required: true }]}
             >
-              <Input type="text" placeholder="your contact no" />
+              <Input type="text" placeholder="your fees" />
             </Form.Item>
           </Col>
           <Col xs={24} md={24} lg={8}>

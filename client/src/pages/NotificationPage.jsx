@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const NotificationPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   // handle read notification
   const handleMarkAllRead = async () => {
@@ -29,9 +29,13 @@ const NotificationPage = () => {
       if (res.data.success) {
         message.success(res.data.message);
       } else {
-        message._InternalPanelDoNotUseOrYouWillBeFired(res.data.message);
+        message.error(res.data.message);
       }
+      setTimeout(function () {
+        location.reload();
+      }, 2000);
     } catch (error) {
+      dispatch(hideLoading());
       console.log(error);
       message.error(`Something Went Wrong`);
     }
@@ -56,7 +60,11 @@ const NotificationPage = () => {
       } else {
         message.error(res.data.message);
       }
+      setTimeout(function () {
+        location.reload();
+      }, 2000);
     } catch (error) {
+      dispatch(hideLoading());
       console.log(error);
       message.error(`Something went wrong in notification`);
     }
@@ -67,7 +75,11 @@ const NotificationPage = () => {
       <Tabs>
         <Tabs.TabPane tab="UnRead" key={0}>
           <div className="d-flex justify-content-end">
-            <h4 className="p-2" onClick={handleMarkAllRead}>
+            <h4
+              className="p-2"
+              onClick={handleMarkAllRead}
+              style={{ cursor: "pointer" }}
+            >
               Mark All Read
             </h4>
           </div>
