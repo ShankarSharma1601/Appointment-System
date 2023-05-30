@@ -3,6 +3,7 @@ const doctorModel = require("../models/doctorModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const appointmentModel = require("../models/appointmentModel");
+const moment = require("moment");
 
 // Register callback
 const registerController = async (req, res) => {
@@ -207,6 +208,8 @@ const getAllDoctorsController = async (req, res) => {
 // Book Appointment
 const bookAppointmentController = async (req, res) => {
   try {
+    req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+    req.body.time = moment(req.body.time, "HH:mm").toISOString();
     req.body.status = "pending";
     const newAppointment = new appointmentModel(req.body);
     await newAppointment.save();
@@ -231,6 +234,46 @@ const bookAppointmentController = async (req, res) => {
   }
 };
 
+// booking availability
+const bookingAvailabilityController = async (req, res) => {
+  try {
+    const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+    const fromTime = moment(req.body.time, "HH:mm")
+      .subtract(1, "hours")
+      .toISOString();
+    const toTime = moment(req.body.time, "HH:mm").add(1, "hours").toISOString();
+
+    const doctorId = req.body.doctorId;
+    const appointments = await appointmentModel.find({
+      doctorId,
+      date,
+      time: {
+        $gte: fromTime,
+        $lte: toTime,
+      },
+    });
+
+    if (appointments.length > 0) {
+      return res.status(200).send({
+        message: `Appointments not Available at this time`,
+        success: true,
+      });
+    } else {
+      return res.status(200).send({
+        success: true,
+        message: `Appointment Available`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: `Error in Booking`,
+      error,
+    });
+  }
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -240,4 +283,5 @@ module.exports = {
   deleteAllNotificationController,
   getAllDoctorsController,
   bookAppointmentController,
+  bookingAvailabilityController,
 };
